@@ -36,16 +36,17 @@ def get_logger() -> logging.Logger:
 
 def get_db() -> mysql.connector.connection.MySQLConnection:
     """Function that returns a connector to the database"""
-    pdb_user = os.getenv('PERSONAL_DATA_DB_USERNAME', 'root')
-    pdb_pwd = os.getenv('PERSONAL_DATA_DB_PASSWORD', '')
-    pdb_host = os.getenv('PERSONAL_DATA_DB_HOST', 'localhost')
-    pdb_name = os.getenv('PERSONAL_DATA_DB_NAME')
-    pdb_connection = mysql.connector.connection.MySQLConnection(
-        user=pdb_user,
-        password=pdb_pwd,
-        host=pdb_host,
-        database=pdb_name)
-    return pdb_connection
+    db_user = os.getenv('PERSONAL_DATA_DB_USERNAME', 'root')
+    db_pwd = os.getenv('PERSONAL_DATA_DB_PASSWORD', '')
+    db_host = os.getenv('PERSONAL_DATA_DB_HOST', 'localhost')
+    db_name = os.getenv('PERSONAL_DATA_DB_NAME')
+    db_connection = mysql.connector.connection.MySQLConnection(
+        user=db_user,
+        password=db_pwd,
+        host=db_host,
+        database=db_name
+    )
+    return db_connection
 
 
 class RedactingFormatter(logging.Formatter):
@@ -73,8 +74,8 @@ def main() -> None:
     Obtains a database connection using get_db,
     and retrieve all rows in the users table,
     and display each row under a filtered format
-    pdb = get_db()
-    cursor = pdb.cursor()
+    db = get_db()
+    cursor = db.cursor()
 
     qry = "SELECT * FROM users;"
     cursor.execute(qry)
