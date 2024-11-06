@@ -69,15 +69,36 @@ class RedactingFormatter(logging.Formatter):
         return filter_datum(self.fields, self.REDACTION, msg, self.SEPARATOR)
 
 
-"""
 def main() -> None:
+    """
     Obtains a database connection using get_db,
     and retrieve all rows in the users table,
     and display each row under a filtered format
+    """
     db = get_db()
     cursor = db.cursor()
-
     qry = "SELECT * FROM users;"
     cursor.execute(qry)
-    names = [
-"""
+
+    data = cursor.fetchall()
+    fNames = [x[0] for x in cursor.description]
+
+    logGer = get_logger()
+    filtered = {'name', 'email', 'phone', 'ssn', 'password'}
+
+    for r in data:
+        msgLog = []
+        for fld, val in zip(fNames, r):
+            if fld in filtered:
+                msgLog.append(f'{fld}=***')
+            else:
+                msgLog.append(f'{fld}={val}')
+
+        logFmtd = "; ".join(msgLog)
+        logGer.info(logFmtd)
+    cursor.close()
+    db.close()
+
+
+if __name__ == "__main__":
+    main()
