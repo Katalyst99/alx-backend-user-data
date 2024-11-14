@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """The module of session_auth views"""
 from api.v1.views import app_views
-from flask import jsonify, request
+from flask import jsonify, request, abort
 from models.user import User
 from os import getenv
 
@@ -34,3 +34,17 @@ def login():
             resp.set_cookie(getenv('SESSION_NAME'), seshId)
             return resp
     return jsonify({"error": "wrong password"}), 401
+
+
+@app_views.route('auth_session/logout',
+                 methods=['DELETE'], strict_slashes=False)
+def logout():
+    """DELETE /api/v1/auth_session/logout
+    Return:
+        - Empty  JSON dictionary with the status code 200
+    """
+    from api.v1.app import auth
+    seshDestroyed = auth.destroy_session(request)
+    if not seshDestroyed:
+        abort(404)
+    return jsonify({}), 200
