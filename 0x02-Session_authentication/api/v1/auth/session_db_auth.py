@@ -36,22 +36,24 @@ class SessionDBAuth(SessionExpAuth):
         sessions = UserSession.search({'session_id': session_id})
         if not sessions or len(sessions) <= 0:
             return none
+        user_session = sessions[0]
         seshTime = timedelta(seconds=self.session_duration)
-        expTime = sessions[0].created_at + seshTime
+        expTime = user_session.created_at + seshTime
         if expTime < datetime.now():
             return None
-        return sessions[0].user_id
+        return user_session.user_id
 
     def destroy_session(self, request=None):
         """
         Method that destroys the UserSession based on the Session ID,
         from the request cookie
         """
-        if request is None or session_id is None:
-            return False
         session_id = self.session_cookie(request)
+        if request is None or session_id is None or user_id is None:
+            return False
         sessions = UserSession.search({'session_id': session_id})
         if not sessions or len(sessions) <= 0:
             return False
-        sessions[0].remove()
+        for sesh in sessions:
+            session.remove()
         return True
