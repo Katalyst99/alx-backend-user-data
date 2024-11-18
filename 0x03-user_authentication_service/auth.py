@@ -47,4 +47,4 @@ class Auth:
                                       user.hashed_password)
         except NoResultFound:
             return False
-        return True
+        return False
