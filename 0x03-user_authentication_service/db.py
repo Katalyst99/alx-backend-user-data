@@ -34,13 +34,9 @@ class DB:
 
     def add_user(self, email: str, hashed_password: str) -> User:
         """Method should save the user to the database"""
-        try:
-            userNew = User(email=email, hashed_password=hashed_password)
-            self._session.add(userNew)
-            self._session.commit()
-        except Exception:
-            self._session.rollback()
-            userNew = None
+        userNew = User(email=email, hashed_password=hashed_password)
+        self._session.add(userNew)
+        self._session.commit()
         return userNew
 
     def find_user_by(self, **kwargs) -> User:
