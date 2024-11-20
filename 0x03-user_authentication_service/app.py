@@ -1,6 +1,6 @@
 #!/usr/bin/python3
 """ Starts a Flash Web Application """
-from flask import Flask, jsonify, request, abort
+from flask import Flask, jsonify, request, abort, redirect
 from auth import Auth
 
 app = Flask(__name__)
@@ -27,7 +27,7 @@ def users() -> str:
 
 @app.route('/sessions', methods=['POST'], strict_slashes=False)
 def login() -> str:
-    """Functiont to respond to the POST /sessions route."""
+    """Function to respond to the POST /sessions route."""
     email = request.form.get('email')
     password = request.form.get('password')
     if not AUTH.valid_login(email, password):
@@ -36,6 +36,17 @@ def login() -> str:
     resp = jsonify({"email": email, "message": "logged in"})
     resp.set_cookie('session_id', session_id)
     return resp
+
+
+@app.route('/sessions', methods=['DELETE'], strict_slashes=False)
+def logout() -> str:
+    """Function to respond to the DELETE /sessions route."""
+    seshId = request.cookies.get('session_id')
+    user = AUTH.get_user_from_session_id(session_id)
+    if seshId is None or user is None:
+        abort(403)
+    AUTH.destroy_session(user.id)
+    return redirect('/')
 
 
 if __name__ == "__main__":
