@@ -1,10 +1,11 @@
-#!/usr/bin/python3
+#!/usr/bin/env python3
 """ Starts a Flash Web Application """
 from flask import Flask, jsonify, request, abort, redirect
 from auth import Auth
 
-app = Flask(__name__)
 AUTH = Auth()
+
+app = Flask(__name__)
 
 
 @app.route('/', methods=['GET'], strict_slashes=False)
