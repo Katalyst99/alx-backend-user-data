@@ -42,11 +42,22 @@ def login() -> str:
 def logout() -> str:
     """Function to respond to the DELETE /sessions route."""
     seshId = request.cookies.get('session_id')
-    user = AUTH.get_user_from_session_id(session_id)
+    user = AUTH.get_user_from_session_id(seshId)
     if seshId is None or user is None:
         abort(403)
     AUTH.destroy_session(user.id)
     return redirect('/')
+
+
+@app.route('/profile', methods=['GET'], strict_slashes=False)
+def profile() -> str:
+    """Function to respond to the GET /profile route."""
+    seshCookie = request.cookies.get('session_id')
+    user = AUTH.get_user_from_session_id(seshCookie)
+    if user:
+        return jsonify({"email": user.email}), 200
+    else:
+        abort(403)
 
 
 if __name__ == "__main__":
