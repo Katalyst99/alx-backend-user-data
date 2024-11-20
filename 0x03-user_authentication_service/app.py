@@ -53,12 +53,11 @@ def logout() -> str:
 @app.route('/profile', methods=['GET'], strict_slashes=False)
 def profile() -> str:
     """Function to respond to the GET /profile route."""
-    seshCookie = request.cookies.get('session_id')
-    user = AUTH.get_user_from_session_id(seshCookie)
-    if user:
-        return jsonify({"email": user.email}), 200
-    else:
+    seshId = request.cookies.get('session_id')
+    user = AUTH.get_user_from_session_id(seshId)
+    if seshId is None or user is None:
         abort(403)
+    return jsonify({"email": user.email}), 200
 
 
 if __name__ == "__main__":
