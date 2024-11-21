@@ -64,12 +64,8 @@ def profile() -> str:
 def get_reset_password_token() -> str:
     """Function to respond to the POST /reset_password route."""
     email = request.form.get('email')
-    try:
-        user = AUTH.find_user_by_email(email)
-    except ValueError:
-        user = None
-
-    if not user:
+    emailRegd = AUTH.create_session(email)
+    if not emailRegd:
         abort(403)
     else:
         reset_token = AUTH.get_reset_password_token(email)
